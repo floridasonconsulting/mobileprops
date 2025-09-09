@@ -1,0 +1,1715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MobileProps - Mobile Proposal App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; transition: all 0.3s ease; }
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .slide-up { animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        
+        /* Dark theme styles */
+        .dark-theme {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            color: #f9fafb;
+        }
+        .dark-theme header {
+            background-color: #374151;
+            border-color: #4f46e5;
+        }
+        .dark-theme nav {
+            background-color: #374151;
+            border-color: #4b5563;
+        }
+        .dark-theme .bg-white {
+            background-color: #374151 !important;
+            color: #f9fafb;
+        }
+        .dark-theme .text-gray-800 {
+            color: #f9fafb !important;
+        }
+        .dark-theme .text-gray-600 {
+            color: #d1d5db !important;
+        }
+        .dark-theme .text-gray-500 {
+            color: #9ca3af !important;
+        }
+        .dark-theme .bg-gray-50 {
+            background-color: #4b5563 !important;
+        }
+        .dark-theme .bg-gray-100 {
+            background-color: #6b7280 !important;
+        }
+        .dark-theme .border-gray-200 {
+            border-color: #6b7280 !important;
+        }
+        .dark-theme .border-gray-300 {
+            border-color: #6b7280 !important;
+        }
+        .dark-theme input, .dark-theme textarea, .dark-theme select {
+            background-color: #4b5563 !important;
+            color: #f9fafb !important;
+            border-color: #6b7280 !important;
+        }
+        .dark-theme input::placeholder, .dark-theme textarea::placeholder {
+            color: #9ca3af !important;
+        }
+        
+        /* Force light theme for proposal modals and previews */
+        .proposal-modal, .proposal-preview {
+            background-color: white !important;
+            color: #1f2937 !important;
+        }
+        .proposal-modal .bg-white {
+            background-color: white !important;
+            color: #1f2937 !important;
+        }
+        .proposal-modal .text-gray-800 {
+            color: #1f2937 !important;
+        }
+        .proposal-modal .text-gray-600 {
+            color: #4b5563 !important;
+        }
+        .proposal-modal .text-gray-500 {
+            color: #6b7280 !important;
+        }
+        .proposal-modal .text-gray-700 {
+            color: #374151 !important;
+        }
+        .proposal-modal .bg-gray-50 {
+            background-color: #f9fafb !important;
+        }
+        .proposal-modal .bg-gray-100 {
+            background-color: #f3f4f6 !important;
+        }
+        .proposal-modal .border-gray-200 {
+            border-color: #e5e7eb !important;
+        }
+        .proposal-modal .border-gray-300 {
+            border-color: #d1d5db !important;
+        }
+        .proposal-modal input, .proposal-modal textarea, .proposal-modal select {
+            background-color: white !important;
+            color: #1f2937 !important;
+            border-color: #d1d5db !important;
+        }
+        .proposal-modal input::placeholder, .proposal-modal textarea::placeholder {
+            color: #9ca3af !important;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-lg border-b-4 border-blue-500">
+        <div class="px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-xs">MP</span>
+                    </div>
+                    <h1 class="text-xl font-bold text-gray-800">MobileProps</h1>
+                </div>
+                <div class="relative">
+                    <button id="menuBtn" class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors">
+                        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <div id="menuDropdown" class="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 hidden z-50">
+                        <div class="p-2">
+                            <div class="px-3 py-2 text-sm font-medium text-gray-700 border-b border-gray-100">Display Theme</div>
+                            <button id="lightTheme" class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg flex items-center space-x-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                                </svg>
+                                <span>Light Theme</span>
+                            </button>
+                            <button id="darkTheme" class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg flex items-center space-x-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                                </svg>
+                                <span>Dark Theme</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="px-4 py-2">
+            <div class="flex space-x-1 overflow-x-auto">
+                <button class="nav-btn active px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap" data-tab="dashboard">Dashboard</button>
+                <button class="nav-btn px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap" data-tab="customers">Customers</button>
+                <button class="nav-btn px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap" data-tab="items">Items</button>
+                <button class="nav-btn px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap" data-tab="proposals">Proposals</button>
+                <button class="nav-btn px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap" data-tab="settings">Settings</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="px-4 py-6">
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content fade-in">
+            <div class="space-y-6">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Quick Actions</h2>
+                    <div class="grid grid-cols-1 gap-4">
+                        <button id="newProposalBtn" class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105 flex items-center justify-center space-x-3">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            <span class="font-semibold">Create New Proposal</span>
+                        </button>
+                        <div class="grid grid-cols-2 gap-4">
+                            <button class="nav-trigger bg-green-500 text-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all" data-tab="customers">
+                                <div class="text-center">
+                                    <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                    </svg>
+                                    <span class="font-medium">Customers</span>
+                                </div>
+                            </button>
+                            <button class="nav-trigger bg-purple-500 text-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all" data-tab="items">
+                                <div class="text-center">
+                                    <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                                    </svg>
+                                    <span class="font-medium">Items</span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Activity</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span class="text-sm text-gray-600">Proposal sent to Acme Corp - $15,000</span>
+                        </div>
+                        <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                            <span class="text-sm text-gray-600">New customer added: Tech Solutions Inc</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customers Tab -->
+        <div id="customers" class="tab-content hidden">
+            <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-gray-800">Customer Management</h2>
+                    <button id="importCustomersBtn" class="bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-green-600 transition-colors text-sm">
+                        Import CSV
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-4">
+                    <div class="flex space-x-2 mb-4">
+                        <input type="text" id="customerSearch" placeholder="Search customers..." class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <button id="addCustomerBtn" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div id="customersList" class="space-y-2">
+                        <!-- Customers will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Items Tab -->
+        <div id="items" class="tab-content hidden">
+            <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-gray-800">Product/Service Items</h2>
+                    <button id="importItemsBtn" class="bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-green-600 transition-colors text-sm">
+                        Import CSV
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-4">
+                    <div class="flex space-x-2 mb-4">
+                        <input type="text" id="itemSearch" placeholder="Search items..." class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <button id="addItemBtn" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div id="itemsList" class="space-y-2">
+                        <!-- Items will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Proposals Tab -->
+        <div id="proposals" class="tab-content hidden">
+            <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-gray-800">My Proposals</h2>
+                    <button class="create-proposal-btn bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-600 transition-colors text-sm">
+                        New Proposal
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-4">
+                    <div id="proposalsList" class="space-y-3">
+                        <!-- Proposals will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settings" class="tab-content hidden">
+            <div class="space-y-6">
+                <h2 class="text-xl font-bold text-gray-800">Company Settings</h2>
+                
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Company Information</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Company Logo</label>
+                            <div class="flex items-center space-x-4">
+                                <div id="logoPreview" class="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300">
+                                    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <input type="file" id="logoUpload" accept="image/*" class="hidden">
+                                    <label for="logoUpload" class="bg-blue-500 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-blue-600 transition-colors text-sm">
+                                        Upload Logo
+                                    </label>
+                                    <p class="text-xs text-gray-500 mt-1">PNG, JPG up to 2MB</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 gap-4">
+                            <input type="text" id="companyName" placeholder="Company Name" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <textarea id="companyAddress" placeholder="Company Address" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 h-20 resize-none"></textarea>
+                            <input type="tel" id="companyPhone" placeholder="Phone Number" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <input type="email" id="companyEmail" placeholder="Email Address" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <input type="url" id="companyWebsite" placeholder="Website URL" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        
+                        <button id="saveCompanyInfo" class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors">
+                            Save Company Information
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Proposal Settings</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <label class="text-sm font-medium text-gray-700">Hide Line Item Pricing</label>
+                                <p class="text-xs text-gray-500">Only show total amount in proposals</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="hideLineItemPricing" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Default Proposal Terms</label>
+                            <textarea id="defaultTerms" placeholder="Enter default terms and conditions..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 h-24 resize-none"></textarea>
+                        </div>
+                        
+                        <button id="saveProposalSettings" class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors">
+                            Save Proposal Settings
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Proposal Creation Modal -->
+    <div id="proposalModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-end justify-center min-h-screen">
+            <div class="proposal-modal bg-white rounded-t-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto slide-up">
+                <div class="sticky top-0 bg-white border-b p-4 rounded-t-2xl">
+                    <div class="flex justify-between items-center">
+                        <h3 id="proposalModalTitle" class="text-lg font-semibold text-gray-800">Create Proposal</h3>
+                        <button id="closeProposalModal" class="p-2 hover:bg-gray-100 rounded-lg">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="p-4 space-y-4">
+                    <!-- Customer Selection -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Select Customer</label>
+                        <select id="proposalCustomer" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="">Choose a customer...</option>
+                        </select>
+                    </div>
+
+                    <!-- Proposal Details -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Proposal Title</label>
+                        <input type="text" id="proposalTitle" placeholder="Enter proposal title..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <!-- Items Selection -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Add Items</label>
+                        <div class="space-y-2">
+                            <select id="itemSelector" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="">Select an item to add...</option>
+                            </select>
+                            <div id="selectedItems" class="space-y-2">
+                                <!-- Selected items will appear here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Custom Item Section -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Add Custom Item</label>
+                        <div class="space-y-2">
+                            <input type="text" id="customItemName" placeholder="Custom item name..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <div class="flex space-x-2">
+                                <input type="number" id="customItemPrice" placeholder="Price" step="0.01" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <button id="addCustomItem" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
+                                    Add Item
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Proposal Notes -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Additional Notes</label>
+                        <textarea id="proposalNotes" placeholder="Add any additional notes or terms..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 h-20 resize-none"></textarea>
+                    </div>
+
+                    <!-- Email Options -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email Options</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" id="copySalesRep" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                <span class="text-sm text-gray-700">Copy sales rep on proposal email</span>
+                            </label>
+                            <input type="email" id="salesRepEmail" placeholder="Sales rep email address..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
+                        </div>
+                    </div>
+
+                    <!-- Total -->
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="flex justify-between items-center">
+                            <span class="font-semibold text-gray-700">Total Amount:</span>
+                            <span id="proposalTotal" class="text-xl font-bold text-blue-600">$0.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="space-y-3 pt-4">
+                        <button id="previewProposal" class="w-full bg-purple-500 text-white py-3 rounded-lg font-semibold hover:bg-purple-600 transition-colors">
+                            Preview Proposal
+                        </button>
+                        <div class="flex space-x-3">
+                            <button id="saveProposal" class="flex-1 bg-blue-500 text-white py-3 rounded-lg font-semibold hover:bg-blue-600 transition-colors">
+                                Save Draft
+                            </button>
+                            <button id="sendProposal" class="flex-1 bg-green-500 text-white py-3 rounded-lg font-semibold hover:bg-green-600 transition-colors">
+                                Send Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Customer Modal -->
+    <div id="customerModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-2xl w-full max-w-md">
+                <div class="p-4 border-b">
+                    <div class="flex justify-between items-center">
+                        <h3 id="customerModalTitle" class="text-lg font-semibold text-gray-800">Add Customer</h3>
+                        <button class="close-modal p-2 hover:bg-gray-100 rounded-lg">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="p-4 space-y-4">
+                    <input type="text" id="customerName" placeholder="Company Name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="customerContact" placeholder="Contact Person" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <input type="email" id="customerEmail" placeholder="Email Address" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <input type="tel" id="customerPhone" placeholder="Phone Number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <button id="saveCustomer" class="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold hover:bg-blue-600 transition-colors">
+                        Add Customer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Item Modal -->
+    <div id="itemModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-2xl w-full max-w-md">
+                <div class="p-4 border-b">
+                    <div class="flex justify-between items-center">
+                        <h3 id="itemModalTitle" class="text-lg font-semibold text-gray-800">Add Item</h3>
+                        <button class="close-modal p-2 hover:bg-gray-100 rounded-lg">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="p-4 space-y-4">
+                    <input type="text" id="itemName" placeholder="Item Name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <textarea id="itemDescription" placeholder="Description" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 h-20 resize-none"></textarea>
+                    <input type="number" id="itemPrice" placeholder="Price" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <button id="saveItem" class="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold hover:bg-blue-600 transition-colors">
+                        Add Item
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Proposal Preview Modal -->
+    <div id="previewModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="proposal-modal bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                <div class="sticky top-0 bg-white border-b p-4 rounded-t-2xl flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-gray-800">Proposal Preview</h3>
+                    <button id="closePreviewModal" class="p-2 hover:bg-gray-100 rounded-lg">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div id="previewContent" class="p-6">
+                    <!-- Preview content will be generated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resend Proposal Modal -->
+    <div id="resendModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="proposal-modal bg-white rounded-2xl w-full max-w-md">
+                <div class="p-4 border-b">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-semibold text-gray-800">Resend Proposal</h3>
+                        <button class="close-modal p-2 hover:bg-gray-100 rounded-lg">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="p-4 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Proposal Details</label>
+                        <div id="resendProposalInfo" class="bg-gray-50 p-3 rounded-lg text-sm">
+                            <!-- Proposal info will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Custom Message (Optional)</label>
+                        <textarea id="resendMessage" placeholder="Add a personal message to accompany the resent proposal..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 h-24 resize-none"></textarea>
+                        <p class="text-xs text-gray-500 mt-1">This message will be included in the email along with the proposal.</p>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" id="resendCopySalesRep" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                            <span class="text-sm text-gray-700">Copy sales rep on resend email</span>
+                        </label>
+                        <input type="email" id="resendSalesRepEmail" placeholder="Sales rep email address..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
+                    </div>
+                    
+                    <div class="flex space-x-3 pt-4">
+                        <button class="close-modal flex-1 bg-gray-500 text-white py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors">
+                            Cancel
+                        </button>
+                        <button id="confirmResend" class="flex-1 bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors">
+                            Resend Proposal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- File Import Modal -->
+    <div id="importModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-2xl w-full max-w-md">
+                <div class="p-4 border-b">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-semibold text-gray-800" id="importModalTitle">Import Data</h3>
+                        <button class="close-modal p-2 hover:bg-gray-100 rounded-lg">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="p-4 space-y-4">
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                        <input type="file" id="csvFile" accept=".csv" class="hidden">
+                        <label for="csvFile" class="cursor-pointer">
+                            <svg class="w-12 h-12 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                            <p class="text-gray-600">Click to select CSV file</p>
+                            <p class="text-sm text-gray-400 mt-2">or drag and drop</p>
+                        </label>
+                    </div>
+                    <div id="importPreview" class="hidden">
+                        <h4 class="font-medium text-gray-700 mb-2">Preview:</h4>
+                        <div id="previewContent" class="bg-gray-50 p-3 rounded-lg text-sm max-h-32 overflow-y-auto"></div>
+                    </div>
+                    <button id="processImport" class="w-full bg-green-500 text-white py-3 rounded-lg font-semibold hover:bg-green-600 transition-colors disabled:bg-gray-300" disabled>
+                        Import Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        let customers = [
+            { id: 1, name: "Acme Corporation", contact: "John Smith", email: "john@acme.com", phone: "(555) 123-4567" },
+            { id: 2, name: "Tech Solutions Inc", contact: "Sarah Johnson", email: "sarah@techsol.com", phone: "(555) 987-6543" }
+        ];
+
+        let items = [
+            { id: 1, name: "Website Development", description: "Custom website design and development", price: 5000 },
+            { id: 2, name: "SEO Optimization", description: "Search engine optimization package", price: 1500 },
+            { id: 3, name: "Mobile App Development", description: "Native mobile application", price: 8000 },
+            { id: 4, name: "Consulting Services", description: "Technical consulting per hour", price: 150 }
+        ];
+
+        let proposals = [
+            { id: 1, title: "Website Redesign Project", customer: "Acme Corporation", total: 6500, status: "Sent", date: "2024-01-15", items: [
+                { id: 1, name: "Website Development", description: "Custom website design and development", price: 5000, quantity: 1, customText: "Modern responsive design with CMS" },
+                { id: 2, name: "SEO Optimization", description: "Search engine optimization package", price: 1500, quantity: 1, customText: "Complete on-page and technical SEO" }
+            ], notes: "Project includes 3 rounds of revisions and 6 months support.", customerInfo: { id: 1, name: "Acme Corporation", contact: "John Smith", email: "john@acme.com", phone: "(555) 123-4567" } }
+        ];
+
+        // Helper function to calculate proposal age and status
+        function getProposalAgeStatus(dateString) {
+            const proposalDate = new Date(dateString);
+            const today = new Date();
+            const daysDiff = Math.floor((today - proposalDate) / (1000 * 60 * 60 * 24));
+            
+            if (daysDiff >= 30) {
+                return { age: daysDiff, status: 'expired', bgClass: 'bg-red-100 border-red-300', textClass: 'text-red-800' };
+            } else if (daysDiff >= 20) {
+                return { age: daysDiff, status: 'aging', bgClass: 'bg-yellow-100 border-yellow-300', textClass: 'text-yellow-800' };
+            } else {
+                return { age: daysDiff, status: 'fresh', bgClass: 'bg-gray-50 border-gray-200', textClass: 'text-gray-800' };
+            }
+        }
+
+        let companyInfo = {
+            name: "Your Company Name",
+            address: "",
+            phone: "",
+            email: "",
+            website: "",
+            logo: null
+        };
+
+        let proposalSettings = {
+            hideLineItemPricing: false,
+            defaultTerms: "Payment terms: Net 30 days. All work subject to signed agreement."
+        };
+
+        let currentImportType = '';
+        let selectedProposalItems = [];
+        let editingProposalId = null;
+        let currentTheme = 'light';
+
+        // Navigation
+        document.querySelectorAll('.nav-btn, .nav-trigger').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetTab = btn.dataset.tab;
+                showTab(targetTab);
+            });
+        });
+
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Show target tab
+            document.getElementById(tabName).classList.remove('hidden');
+            
+            // Update nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-blue-500', 'text-white');
+                btn.classList.add('text-gray-600', 'hover:bg-gray-100');
+            });
+            
+            const activeBtn = document.querySelector(`[data-tab="${tabName}"].nav-btn`);
+            if (activeBtn) {
+                activeBtn.classList.add('active', 'bg-blue-500', 'text-white');
+                activeBtn.classList.remove('text-gray-600', 'hover:bg-gray-100');
+            }
+        }
+
+        // Modal Management
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+
+        function hideModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        document.querySelectorAll('.close-modal').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const modal = e.target.closest('.fixed');
+                modal.classList.add('hidden');
+            });
+        });
+
+        // Menu dropdown functionality
+        document.getElementById('menuBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            const dropdown = document.getElementById('menuDropdown');
+            dropdown.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', () => {
+            document.getElementById('menuDropdown').classList.add('hidden');
+        });
+
+        // Theme switching
+        document.getElementById('lightTheme').addEventListener('click', () => {
+            currentTheme = 'light';
+            document.body.classList.remove('dark-theme');
+            localStorage.setItem('theme', 'light');
+            document.getElementById('menuDropdown').classList.add('hidden');
+        });
+
+        document.getElementById('darkTheme').addEventListener('click', () => {
+            currentTheme = 'dark';
+            document.body.classList.add('dark-theme');
+            localStorage.setItem('theme', 'dark');
+            document.getElementById('menuDropdown').classList.add('hidden');
+        });
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            currentTheme = 'dark';
+            document.body.classList.add('dark-theme');
+        }
+
+        // Customer Management
+        function renderCustomers() {
+            const container = document.getElementById('customersList');
+            const searchTerm = document.getElementById('customerSearch').value.toLowerCase();
+            
+            const filteredCustomers = customers.filter(customer => 
+                customer.name.toLowerCase().includes(searchTerm) ||
+                customer.contact.toLowerCase().includes(searchTerm) ||
+                customer.email.toLowerCase().includes(searchTerm)
+            );
+
+            container.innerHTML = filteredCustomers.map(customer => `
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800">${customer.name}</h4>
+                            <p class="text-sm text-gray-600">${customer.contact}</p>
+                            <p class="text-sm text-blue-600">${customer.email}</p>
+                            <p class="text-sm text-gray-500">${customer.phone}</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="edit-customer-btn text-blue-500 hover:bg-blue-50 p-2 rounded-lg" data-customer-id="${customer.id}" title="Edit Customer">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                </svg>
+                            </button>
+                            <button class="delete-customer-btn text-red-500 hover:bg-red-50 p-2 rounded-lg" data-customer-id="${customer.id}" title="Delete Customer">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                            </button>
+                            <button class="create-proposal-btn text-green-500 hover:bg-green-50 p-2 rounded-lg" data-customer-id="${customer.id}" title="Create Proposal">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            updateProposalCustomerSelect();
+            // Re-initialize proposal creation buttons after rendering
+            initializeProposalCreation();
+        }
+
+        function updateProposalCustomerSelect() {
+            const select = document.getElementById('proposalCustomer');
+            select.innerHTML = '<option value="">Choose a customer...</option>' +
+                customers.map(customer => `<option value="${customer.id}">${customer.name}</option>`).join('');
+        }
+
+        document.getElementById('customerSearch').addEventListener('input', renderCustomers);
+
+        let editingCustomerId = null;
+
+        document.getElementById('addCustomerBtn').addEventListener('click', () => {
+            editingCustomerId = null;
+            document.getElementById('customerModalTitle').textContent = 'Add Customer';
+            document.getElementById('customerName').value = '';
+            document.getElementById('customerContact').value = '';
+            document.getElementById('customerEmail').value = '';
+            document.getElementById('customerPhone').value = '';
+            showModal('customerModal');
+        });
+
+        document.getElementById('saveCustomer').addEventListener('click', () => {
+            const name = document.getElementById('customerName').value.trim();
+            const contact = document.getElementById('customerContact').value.trim();
+            const email = document.getElementById('customerEmail').value.trim();
+            const phone = document.getElementById('customerPhone').value.trim();
+
+            if (name && contact && email) {
+                if (editingCustomerId) {
+                    // Update existing customer
+                    const customerIndex = customers.findIndex(c => c.id === editingCustomerId);
+                    if (customerIndex !== -1) {
+                        customers[customerIndex] = {
+                            id: editingCustomerId,
+                            name,
+                            contact,
+                            email,
+                            phone
+                        };
+                    }
+                } else {
+                    // Add new customer
+                    const newCustomer = {
+                        id: Date.now(),
+                        name,
+                        contact,
+                        email,
+                        phone
+                    };
+                    customers.push(newCustomer);
+                }
+                
+                renderCustomers();
+                
+                // Clear form
+                document.getElementById('customerName').value = '';
+                document.getElementById('customerContact').value = '';
+                document.getElementById('customerEmail').value = '';
+                document.getElementById('customerPhone').value = '';
+                editingCustomerId = null;
+                
+                hideModal('customerModal');
+            }
+        });
+
+        // Items Management
+        function renderItems() {
+            const container = document.getElementById('itemsList');
+            const searchTerm = document.getElementById('itemSearch').value.toLowerCase();
+            
+            const filteredItems = items.filter(item => 
+                item.name.toLowerCase().includes(searchTerm) ||
+                item.description.toLowerCase().includes(searchTerm)
+            );
+
+            container.innerHTML = filteredItems.map(item => `
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800">${item.name}</h4>
+                            <p class="text-sm text-gray-600 mb-2">${item.description}</p>
+                            <p class="text-lg font-bold text-green-600">$${item.price.toLocaleString()}</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="edit-item-btn text-blue-500 hover:bg-blue-50 p-2 rounded-lg" data-item-id="${item.id}" title="Edit Item">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                </svg>
+                            </button>
+                            <button class="delete-item-btn text-red-500 hover:bg-red-50 p-2 rounded-lg" data-item-id="${item.id}" title="Delete Item">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            updateItemSelector();
+        }
+
+        function updateItemSelector() {
+            const select = document.getElementById('itemSelector');
+            select.innerHTML = '<option value="">Select an item to add...</option>' +
+                items.map(item => `<option value="${item.id}">${item.name} - $${item.price.toLocaleString()}</option>`).join('');
+        }
+
+        document.getElementById('itemSearch').addEventListener('input', renderItems);
+
+        let editingItemId = null;
+
+        document.getElementById('addItemBtn').addEventListener('click', () => {
+            editingItemId = null;
+            document.getElementById('itemModalTitle').textContent = 'Add Item';
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemDescription').value = '';
+            document.getElementById('itemPrice').value = '';
+            showModal('itemModal');
+        });
+
+        document.getElementById('saveItem').addEventListener('click', () => {
+            const name = document.getElementById('itemName').value.trim();
+            const description = document.getElementById('itemDescription').value.trim();
+            const price = parseFloat(document.getElementById('itemPrice').value);
+
+            if (name && description && price > 0) {
+                if (editingItemId) {
+                    // Update existing item
+                    const itemIndex = items.findIndex(i => i.id === editingItemId);
+                    if (itemIndex !== -1) {
+                        items[itemIndex] = {
+                            id: editingItemId,
+                            name,
+                            description,
+                            price
+                        };
+                    }
+                } else {
+                    // Add new item
+                    const newItem = {
+                        id: Date.now(),
+                        name,
+                        description,
+                        price
+                    };
+                    items.push(newItem);
+                }
+                
+                renderItems();
+                
+                // Clear form
+                document.getElementById('itemName').value = '';
+                document.getElementById('itemDescription').value = '';
+                document.getElementById('itemPrice').value = '';
+                editingItemId = null;
+                
+                hideModal('itemModal');
+            }
+        });
+
+        // Proposal Management
+        function renderProposals() {
+            const container = document.getElementById('proposalsList');
+            
+            if (proposals.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-gray-500">
+                        <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <p>No proposals yet</p>
+                        <p class="text-sm">Create your first proposal to get started</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = proposals.map(proposal => {
+                const ageStatus = getProposalAgeStatus(proposal.date);
+                
+                let ageIndicator = '';
+                if (ageStatus.status === 'aging') {
+                    ageIndicator = `<span class="text-xs ${ageStatus.textClass} font-medium">⚠️ ${ageStatus.age} days old</span>`;
+                } else if (ageStatus.status === 'expired') {
+                    ageIndicator = `<span class="text-xs ${ageStatus.textClass} font-medium">❌ Expired (${ageStatus.age} days)</span>`;
+                }
+
+                let actionButtons = '';
+                if (ageStatus.status === 'expired') {
+                    actionButtons = `
+                        <button class="preview-proposal-btn flex-1 bg-purple-500 text-white py-2 rounded-lg hover:bg-purple-600 transition-colors text-sm" data-proposal-id="${proposal.id}">
+                            Preview
+                        </button>
+                        <button class="delete-proposal-btn flex-1 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition-colors text-sm" data-proposal-id="${proposal.id}">
+                            Delete
+                        </button>
+                    `;
+                } else if (ageStatus.status === 'aging') {
+                    actionButtons = `
+                        <button class="edit-proposal-btn bg-blue-500 text-white py-2 px-3 rounded-lg hover:bg-blue-600 transition-colors text-sm" data-proposal-id="${proposal.id}">
+                            Edit
+                        </button>
+                        <button class="preview-proposal-btn bg-purple-500 text-white py-2 px-3 rounded-lg hover:bg-purple-600 transition-colors text-sm" data-proposal-id="${proposal.id}">
+                            Preview
+                        </button>
+                        <button class="resend-proposal-btn bg-orange-500 text-white py-2 px-3 rounded-lg hover:bg-orange-600 transition-colors text-sm" data-proposal-id="${proposal.id}">
+                            Resend
+                        </button>
+                    `;
+                } else {
+                    actionButtons = `
+                        <button class="edit-proposal-btn flex-1 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors text-sm" data-proposal-id="${proposal.id}">
+                            Edit
+                        </button>
+                        <button class="preview-proposal-btn flex-1 bg-purple-500 text-white py-2 rounded-lg hover:bg-purple-600 transition-colors text-sm" data-proposal-id="${proposal.id}">
+                            Preview
+                        </button>
+                    `;
+                }
+
+                return `
+                    <div class="${ageStatus.bgClass} p-4 rounded-lg border ${ageStatus.bgClass.includes('border') ? '' : 'border-gray-200'}">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-semibold ${ageStatus.textClass}">${proposal.title}</h4>
+                            <div class="flex flex-col items-end space-y-1">
+                                <span class="px-2 py-1 text-xs rounded-full ${proposal.status === 'Sent' ? 'bg-green-100 text-green-800' : proposal.status === 'Resent' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800'}">${proposal.status}</span>
+                                ${ageIndicator}
+                            </div>
+                        </div>
+                        <p class="text-sm ${ageStatus.status === 'expired' ? 'text-red-600' : ageStatus.status === 'aging' ? 'text-yellow-700' : 'text-gray-600'} mb-2">${proposal.customer}</p>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-lg font-bold ${ageStatus.status === 'expired' ? 'text-red-700' : ageStatus.status === 'aging' ? 'text-yellow-700' : 'text-blue-600'}">$${proposal.total.toLocaleString()}</span>
+                            <span class="text-sm ${ageStatus.status === 'expired' ? 'text-red-500' : ageStatus.status === 'aging' ? 'text-yellow-600' : 'text-gray-500'}">${proposal.date}</span>
+                        </div>
+                        <div class="flex space-x-2 ${ageStatus.status === 'aging' ? 'flex-wrap gap-2' : ''}">
+                            ${actionButtons}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Proposal Creation
+        function initializeProposalCreation() {
+            document.querySelectorAll('.create-proposal-btn, #newProposalBtn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const customerId = e.target.closest('[data-customer-id]')?.dataset.customerId;
+                    editingProposalId = null;
+                    selectedProposalItems = [];
+                    updateSelectedItems();
+                    updateProposalTotal();
+                    
+                    // Reset modal title
+                    document.getElementById('proposalModalTitle').textContent = 'Create Proposal';
+                    
+                    // Clear form
+                    document.getElementById('proposalTitle').value = '';
+                    document.getElementById('proposalNotes').value = '';
+                    document.getElementById('copySalesRep').checked = false;
+                    document.getElementById('salesRepEmail').value = companyInfo.email || '';
+                    document.getElementById('customItemName').value = '';
+                    document.getElementById('customItemPrice').value = '';
+                    
+                    if (customerId) {
+                        document.getElementById('proposalCustomer').value = customerId;
+                    } else {
+                        document.getElementById('proposalCustomer').value = '';
+                    }
+                    
+                    showModal('proposalModal');
+                });
+            });
+        }
+
+        // Initialize proposal creation buttons
+        initializeProposalCreation();
+
+        function editProposal(proposal) {
+            editingProposalId = proposal.id;
+            
+            // Update modal title
+            document.getElementById('proposalModalTitle').textContent = 'Edit Proposal';
+            
+            // Populate form with existing proposal data
+            document.getElementById('proposalCustomer').value = proposal.customerInfo.id;
+            document.getElementById('proposalTitle').value = proposal.title;
+            document.getElementById('proposalNotes').value = proposal.notes || '';
+            
+            // Set selected items
+            selectedProposalItems = proposal.items.map(item => ({...item}));
+            updateSelectedItems();
+            updateProposalTotal();
+            
+            showModal('proposalModal');
+        }
+
+        document.getElementById('closeProposalModal').addEventListener('click', () => {
+            hideModal('proposalModal');
+        });
+
+        document.getElementById('itemSelector').addEventListener('change', (e) => {
+            const itemId = parseInt(e.target.value);
+            if (itemId) {
+                const item = items.find(i => i.id === itemId);
+                if (item && !selectedProposalItems.find(si => si.id === itemId)) {
+                    selectedProposalItems.push({
+                        ...item,
+                        quantity: 1
+                    });
+                    updateSelectedItems();
+                    updateProposalTotal();
+                }
+                e.target.value = '';
+            }
+        });
+
+        // Custom item functionality
+        document.getElementById('addCustomItem').addEventListener('click', () => {
+            const name = document.getElementById('customItemName').value.trim();
+            const price = parseFloat(document.getElementById('customItemPrice').value);
+            
+            if (name && price > 0) {
+                const customItem = {
+                    id: Date.now(),
+                    name: name,
+                    description: 'Custom item',
+                    price: price,
+                    quantity: 1,
+                    isCustom: true
+                };
+                
+                selectedProposalItems.push(customItem);
+                updateSelectedItems();
+                updateProposalTotal();
+                
+                // Clear custom item inputs
+                document.getElementById('customItemName').value = '';
+                document.getElementById('customItemPrice').value = '';
+            } else {
+                alert('Please enter both item name and price.');
+            }
+        });
+
+        function updateSelectedItems() {
+            const container = document.getElementById('selectedItems');
+            container.innerHTML = selectedProposalItems.map(item => `
+                <div class="bg-white p-3 rounded-lg border border-gray-200">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex-1">
+                            <h5 class="font-medium text-gray-800">${item.name}</h5>
+                            <p class="text-sm text-gray-600">$${item.price.toLocaleString()} each</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="quantity-btn w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300" data-item-id="${item.id}" data-action="decrease">-</button>
+                            <span class="w-8 text-center font-medium">${item.quantity}</span>
+                            <button class="quantity-btn w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300" data-item-id="${item.id}" data-action="increase">+</button>
+                            <button class="remove-item text-red-500 hover:bg-red-50 p-1 rounded" data-item-id="${item.id}">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <textarea class="custom-text-input w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 resize-none" 
+                              placeholder="Add custom description or notes for this item..." 
+                              data-item-id="${item.id}" 
+                              rows="2">${item.customText || ''}</textarea>
+                </div>
+            `).join('');
+
+            // Add event listeners for quantity buttons
+            document.querySelectorAll('.quantity-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const itemId = parseInt(e.target.dataset.itemId);
+                    const action = e.target.dataset.action;
+                    const item = selectedProposalItems.find(i => i.id === itemId);
+                    
+                    if (item) {
+                        if (action === 'increase') {
+                            item.quantity++;
+                        } else if (action === 'decrease' && item.quantity > 1) {
+                            item.quantity--;
+                        }
+                        updateSelectedItems();
+                        updateProposalTotal();
+                    }
+                });
+            });
+
+            // Add event listeners for remove buttons
+            document.querySelectorAll('.remove-item').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const itemId = parseInt(e.target.dataset.itemId);
+                    selectedProposalItems = selectedProposalItems.filter(i => i.id !== itemId);
+                    updateSelectedItems();
+                    updateProposalTotal();
+                });
+            });
+
+            // Add event listeners for custom text inputs
+            document.querySelectorAll('.custom-text-input').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    const itemId = parseInt(e.target.dataset.itemId);
+                    const item = selectedProposalItems.find(i => i.id === itemId);
+                    if (item) {
+                        item.customText = e.target.value;
+                    }
+                });
+            });
+        }
+
+        function updateProposalTotal() {
+            const total = selectedProposalItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            document.getElementById('proposalTotal').textContent = `$${total.toLocaleString()}`;
+        }
+
+        document.getElementById('saveProposal').addEventListener('click', () => {
+            saveProposal('Draft');
+        });
+
+        document.getElementById('sendProposal').addEventListener('click', () => {
+            saveProposal('Sent');
+        });
+
+        function saveProposal(status) {
+            const customerId = document.getElementById('proposalCustomer').value;
+            const title = document.getElementById('proposalTitle').value.trim();
+            const notes = document.getElementById('proposalNotes').value.trim();
+            
+            if (!customerId || !title || selectedProposalItems.length === 0) {
+                alert('Please fill in all required fields and add at least one item.');
+                return;
+            }
+
+            const customer = customers.find(c => c.id == customerId);
+            const total = selectedProposalItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            if (editingProposalId) {
+                // Update existing proposal
+                const proposalIndex = proposals.findIndex(p => p.id === editingProposalId);
+                if (proposalIndex !== -1) {
+                    proposals[proposalIndex] = {
+                        ...proposals[proposalIndex],
+                        title,
+                        customer: customer.name,
+                        customerInfo: customer,
+                        total,
+                        status,
+                        items: [...selectedProposalItems],
+                        notes
+                    };
+                }
+            } else {
+                // Create new proposal
+                const newProposal = {
+                    id: Date.now(),
+                    title,
+                    customer: customer.name,
+                    customerInfo: customer,
+                    total,
+                    status,
+                    date: new Date().toISOString().split('T')[0],
+                    items: [...selectedProposalItems],
+                    notes
+                };
+                proposals.push(newProposal);
+            }
+
+            renderProposals();
+            
+            // Clear form
+            document.getElementById('proposalCustomer').value = '';
+            document.getElementById('proposalTitle').value = '';
+            document.getElementById('proposalNotes').value = '';
+            document.getElementById('copySalesRep').checked = false;
+            document.getElementById('salesRepEmail').value = '';
+            document.getElementById('customItemName').value = '';
+            document.getElementById('customItemPrice').value = '';
+            selectedProposalItems = [];
+            updateSelectedItems();
+            updateProposalTotal();
+            editingProposalId = null;
+            
+            hideModal('proposalModal');
+            
+            const action = editingProposalId ? 'updated' : (status === 'Sent' ? 'sent' : 'saved');
+            if (status === 'Sent') {
+                const copySalesRep = document.getElementById('copySalesRep').checked;
+                const salesRepEmail = document.getElementById('salesRepEmail').value.trim();
+                
+                let emailMessage = `Proposal "${title}" has been ${action} and sent to ${customer.name} at ${customer.email}`;
+                
+                if (copySalesRep && salesRepEmail) {
+                    emailMessage += `\nSales rep (${salesRepEmail}) has been copied on the email.`;
+                } else if (copySalesRep && !salesRepEmail) {
+                    emailMessage += `\nNote: Sales rep email was not provided, so they were not copied.`;
+                }
+                
+                alert(emailMessage);
+            } else {
+                alert(`Proposal "${title}" has been ${action} as draft.`);
+            }
+        }
+
+        // CSV Import Functionality
+        document.getElementById('importCustomersBtn').addEventListener('click', () => {
+            currentImportType = 'customers';
+            document.getElementById('importModalTitle').textContent = 'Import Customers';
+            showModal('importModal');
+        });
+
+        document.getElementById('importItemsBtn').addEventListener('click', () => {
+            currentImportType = 'items';
+            document.getElementById('importModalTitle').textContent = 'Import Items';
+            showModal('importModal');
+        });
+
+        document.getElementById('csvFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file && file.type === 'text/csv') {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const csv = e.target.result;
+                    const lines = csv.split('\n').filter(line => line.trim());
+                    const preview = lines.slice(0, 3).join('\n');
+                    
+                    document.getElementById('previewContent').textContent = preview;
+                    document.getElementById('importPreview').classList.remove('hidden');
+                    document.getElementById('processImport').disabled = false;
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        document.getElementById('processImport').addEventListener('click', () => {
+            const file = document.getElementById('csvFile').files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const csv = e.target.result;
+                const lines = csv.split('\n').filter(line => line.trim());
+                const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+                
+                if (currentImportType === 'customers') {
+                    for (let i = 1; i < lines.length; i++) {
+                        const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
+                        if (values.length >= 4) {
+                            customers.push({
+                                id: Date.now() + i,
+                                name: values[0] || '',
+                                contact: values[1] || '',
+                                email: values[2] || '',
+                                phone: values[3] || ''
+                            });
+                        }
+                    }
+                    renderCustomers();
+                } else if (currentImportType === 'items') {
+                    for (let i = 1; i < lines.length; i++) {
+                        const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
+                        if (values.length >= 3) {
+                            items.push({
+                                id: Date.now() + i,
+                                name: values[0] || '',
+                                description: values[1] || '',
+                                price: parseFloat(values[2]) || 0
+                            });
+                        }
+                    }
+                    renderItems();
+                }
+                
+                hideModal('importModal');
+                document.getElementById('csvFile').value = '';
+                document.getElementById('importPreview').classList.add('hidden');
+                document.getElementById('processImport').disabled = true;
+                
+                alert(`Successfully imported ${lines.length - 1} ${currentImportType}!`);
+            };
+            reader.readAsText(file);
+        });
+
+        // Company Settings Management
+        function loadCompanySettings() {
+            document.getElementById('companyName').value = companyInfo.name;
+            document.getElementById('companyAddress').value = companyInfo.address;
+            document.getElementById('companyPhone').value = companyInfo.phone;
+            document.getElementById('companyEmail').value = companyInfo.email;
+            document.getElementById('companyWebsite').value = companyInfo.website;
+            document.getElementById('hideLineItemPricing').checked = proposalSettings.hideLineItemPricing;
+            document.getElementById('defaultTerms').value = proposalSettings.defaultTerms;
+            
+            if (companyInfo.logo) {
+                document.getElementById('logoPreview').innerHTML = `<img src="${companyInfo.logo}" alt="Company Logo" class="w-full h-full object-contain rounded-lg">`;
+            }
+        }
+
+        document.getElementById('logoUpload').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    companyInfo.logo = e.target.result;
+                    document.getElementById('logoPreview').innerHTML = `<img src="${companyInfo.logo}" alt="Company Logo" class="w-full h-full object-contain rounded-lg">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('saveCompanyInfo').addEventListener('click', () => {
+            companyInfo.name = document.getElementById('companyName').value.trim();
+            companyInfo.address = document.getElementById('companyAddress').value.trim();
+            companyInfo.phone = document.getElementById('companyPhone').value.trim();
+            companyInfo.email = document.getElementById('companyEmail').value.trim();
+            companyInfo.website = document.getElementById('companyWebsite').value.trim();
+            alert('Company information saved successfully!');
+        });
+
+        document.getElementById('saveProposalSettings').addEventListener('click', () => {
+            proposalSettings.hideLineItemPricing = document.getElementById('hideLineItemPricing').checked;
+            proposalSettings.defaultTerms = document.getElementById('defaultTerms').value.trim();
+            alert('Proposal settings saved successfully!');
+        });
+
+        // Proposal Preview Functionality
+        function generateProposalPreview(proposal) {
+            const hideItemPricing = proposalSettings.hideLineItemPricing;
+            const currentDate = new Date().toLocaleDateString();
+            
+            return `
+                <div class="proposal-preview bg-white">
+                    <!-- Header -->
+                    <div class="flex justify-between items-start mb-8">
+                        <div class="flex items-center space-x-4">
+                            ${companyInfo.logo ? `<img src="${companyInfo.logo}" alt="Company Logo" class="w-16 h-16 object-contain">` : ''}
+                            <div>
+                                <h1 class="text-2xl font-bold text-gray-800">${companyInfo.name}</h1>
+                                ${companyInfo.address ? `<p class="text-sm text-gray-600">${companyInfo.address.replace(/\n/g, '<br>')}</p>` : ''}
+                                ${companyInfo.phone ? `<p class="text-sm text-gray-600">${companyInfo.phone}</p>` : ''}
+                                ${companyInfo.email ? `<p class="text-sm text-gray-600">${companyInfo.email}</p>` : ''}
+                                ${companyInfo.website ? `<p class="text-sm text-gray-600">${companyInfo.website}</p>` : ''}
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <h2 class="text-xl font-bold text-blue-600">PROPOSAL</h2>
+                            <p class="text-sm text-gray-600">Date: ${currentDate}</p>
+                            <p class="text-sm text-gray-600">Proposal #: ${proposal.id}</p>
+                        </div>
+                    </div>
+
+                    <!-- Customer Info -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">Prepared For:</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-gray-800">${proposal.customerInfo.name}</h4>
+                            <p class="text-gray-600">${proposal.customerInfo.contact}</p>
+                            <p class="text-gray-600">${proposal.customerInfo.email}</p>
+                            <p class="text-gray-600">${proposal.customerInfo.phone}</p>
+                        </div>
+                    </div>
+
+                    <!-- Proposal Title -->
+                    <div class="mb-6">
+                        <h3 class="text-xl font-bold text-gray-800">${proposal.title}</h3>
+                    </div>
+
+                    <!-- Items -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Proposed Services/Products:</h3>
+                        <div class="space-y-4">
+                            ${proposal.items.map(item => `
+                                <div class="border-b border-gray-200 pb-4">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div class="flex-1">
+                                            <h4 class="font-semibold text-gray-800">${item.name}</h4>
+                                            <p class="text-sm text-gray-600">${item.description}</p>
+                                            ${item.customText ? `<p class="text-sm text-blue-600 mt-1 italic">${item.customText}</p>` : ''}
+                                        </div>
+                                        ${!hideItemPricing ? `
+                                            <div class="text-right ml-4">
+                                                <p class="text-sm text-gray-600">Qty: ${item.quantity}</p>
+                                                <p class="text-sm text-gray-600">$${item.price.toLocaleString()} each</p>
+                                                <p class="font-semibold text-gray-800">$${(item.price * item.quantity).toLocaleString()}</p>
+                                            </div>
+                                        ` : `
+                                            <div class="text-right ml-4">
+                                                <p class="text-sm text-gray-600">Qty: ${item.quantity}</p>
+                                            </div>
+                                        `}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Total -->
+                    <div class="mb-8">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <div class="flex justify-between items-center">
+                                <span class="text-lg font-semibold text-gray-800">Total Investment:</span>
+                                <span class="text-2xl font-bold text-blue-600">$${proposal.total.toLocaleString()}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    ${proposal.notes ? `
+                        <div class="mb-8">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">Additional Notes:</h3>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <p class="text-gray-700">${proposal.notes.replace(/\n/g, '<br>')}</p>
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <!-- Terms -->
+                    ${proposalSettings.defaultTerms ? `
+                        <div class="mb-8">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">Terms & Conditions:</h3>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <p class="text-sm text-gray-700">${proposalSettings.defaultTerms.replace(/\n/g, '<br>')}</p>
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <!-- Footer -->
+                    <div class="text-center pt-8 border-t border-gray-200">
+                        <p class="text-sm text-gray-600">Thank you for considering our proposal. We look forward to working with you!</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Preview Modal Event Listeners
+        document.getElementById('previewProposal').addEventListener('click', () => {
+            const customerId = document.getElementById('proposalCustomer').value;
+            const title = document.getElementById('proposalTitle').value.trim();
+            const notes = document.getElementById('proposalNotes').value.trim();
+            
+            if (!customerId || !title || selectedProposalItems.length === 0) {
+                alert('Please fill in all required fields and add at least one item before previewing.');
+                return;
+            }
+
+            const customer = customers.find(c => c.id == customerId);
+            const total = selectedProposalItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            const previewProposal = {
+                id: 'PREVIEW',
+                title,
+                customer: customer.name,
+                customerInfo: customer,
+                total,
+                items: [...selectedProposalItems],
+                notes
+            };
+
+            document.getElementById('previewContent').innerHTML = generateProposalPreview(previewProposal);
+            showModal('previewModal');
+        });
+
+        document.getElementById('closePreviewModal').addEventListener('click', () => {
+            hideModal('previewModal');
+        });
+
+        // Add event listeners for proposal preview, edit, resend, and delete buttons
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('preview-proposal-btn')) {
+                const proposalId = parseInt(e.target.dataset.proposalId);
+                const proposal = proposals.find(p => p.id === proposalId);
+                if (proposal) {
+                    document.getElementById('previewContent').innerHTML = generateProposalPreview(proposal);
+                    showModal('previewModal');
+                }
+            }
+            
+            if (e.target.classList.contains('edit-proposal-btn')) {
+                const proposalId = parseInt(e.target.dataset.proposalId);
+                const proposal = proposals.find(p => p.id === proposalId);
+                if (proposal) {
+                    editProposal(proposal);
+                }
+            }
+            
+            if (e.target.classList.contains('resend-proposal-btn')) {
+                const proposalId = parseInt(e.target.dataset.proposalId);
+                const proposal = proposals.find(p => p.id === proposalId);
+                if (proposal) {
+                    showResendModal(proposal);
+                }
+            }
+            
+            if (e.target.classList.contains('delete-proposal-btn')) {
+                const proposalId = parseInt(e.target.dataset.proposalId);
+                const proposal = proposals.find(p => p.id === proposalId);
+                if (proposal && confirm(`Are you sure you want to delete the proposal "${proposal.title}"? This action cannot be undone.`)) {
+                    deleteProposal(proposalId);
+                }
+            }
+            
+            // Customer edit and delete
+            if (e.target.classList.contains('edit-customer-btn') || e.target.closest('.edit-customer-btn')) {
+                const btn = e.target.classList.contains('edit-customer-btn') ? e.target : e.target.closest('.edit-customer-btn');
+                const customerId = parseInt(btn.dataset.customerId);
+                const customer = customers.find(c => c.id === customerId);
+                if (customer) {
+                    editingCustomerId = customerId;
+                    document.getElementById('customerModalTitle').textContent = 'Edit Customer';
+                    document.getElementById('customerName').value = customer.name;
+                    document.getElementById('customerContact').value = customer.contact;
+                    document.getElementById('customerEmail').value = customer.email;
+                    document.getElementById('customerPhone').value = customer.phone;
+                    showModal('customerModal');
+                }
+            }
+            
+            if (e.target.classList.contains('delete-customer-btn') || e.target.closest('.delete-customer-btn')) {
+                const btn = e.target.classList.contains('delete-customer-btn') ? e.target : e.target.closest('.delete-customer-btn');
+                const customerId = parseInt(btn.dataset.customerId);
+                const customer = customers.find(c => c.id === customerId);
+                if (customer && confirm(`Are you sure you want to delete "${customer.name}"? This action cannot be undone.`)) {
+                    customers = customers.filter(c => c.id !== customerId);
+                    renderCustomers();
+                }
+            }
+            
+            // Item edit and delete
+            if (e.target.classList.contains('edit-item-btn') || e.target.closest('.edit-item-btn')) {
+                const btn = e.target.classList.contains('edit-item-btn') ? e.target : e.target.closest('.edit-item-btn');
+                const itemId = parseInt(btn.dataset.itemId);
+                const item = items.find(i => i.id === itemId);
+                if (item) {
+                    editingItemId = itemId;
+                    document.getElementById('itemModalTitle').textContent = 'Edit Item';
+                    document.getElementById('itemName').value = item.name;
+                    document.getElementById('itemDescription').value = item.description;
+                    document.getElementById('itemPrice').value = item.price;
+                    showModal('itemModal');
+                }
+            }
+            
+            if (e.target.classList.contains('delete-item-btn') || e.target.closest('.delete-item-btn')) {
+                const btn = e.target.classList.contains('delete-item-btn') ? e.target : e.target.closest('.delete-item-btn');
+                const itemId = parseInt(btn.dataset.itemId);
+                const item = items.find(i => i.id === itemId);
+                if (item && confirm(`Are you sure you want to delete "${item.name}"? This action cannot be undone.`)) {
+                    items = items.filter(i => i.id !== itemId);
+                    renderItems();
+                }
+            }
+        });
+
+        // Resend proposal functionality
+        let currentResendProposal = null;
+
+        function showResendModal(proposal) {
+            currentResendProposal = proposal;
+            
+            // Populate proposal info
+            document.getElementById('resendProposalInfo').innerHTML = `
+                <div class="space-y-1">
+                    <p><strong>Title:</strong> ${proposal.title}</p>
+                    <p><strong>Customer:</strong> ${proposal.customer}</p>
+                    <p><strong>Total:</strong> $${proposal.total.toLocaleString()}</p>
+                    <p><strong>Original Date:</strong> ${proposal.date}</p>
+                    <p><strong>Customer Email:</strong> ${proposal.customerInfo.email}</p>
+                </div>
+            `;
+            
+            // Clear previous values
+            document.getElementById('resendMessage').value = '';
+            document.getElementById('resendCopySalesRep').checked = false;
+            document.getElementById('resendSalesRepEmail').value = companyInfo.email || '';
+            
+            showModal('resendModal');
+        }
+
+        document.getElementById('confirmResend').addEventListener('click', () => {
+            if (!currentResendProposal) return;
+            
+            const customMessage = document.getElementById('resendMessage').value.trim();
+            const copySalesRep = document.getElementById('resendCopySalesRep').checked;
+            const salesRepEmail = document.getElementById('resendSalesRepEmail').value.trim();
+            
+            // Update proposal status and date
+            const proposalIndex = proposals.findIndex(p => p.id === currentResendProposal.id);
+            if (proposalIndex !== -1) {
+                proposals[proposalIndex].status = 'Resent';
+                proposals[proposalIndex].date = new Date().toISOString().split('T')[0];
+            }
+            
+            let emailMessage = `Proposal "${currentResendProposal.title}" has been resent to ${currentResendProposal.customer} at ${currentResendProposal.customerInfo.email}`;
+            
+            if (customMessage) {
+                emailMessage += `\n\nCustom message included: "${customMessage}"`;
+            }
+            
+            if (copySalesRep && salesRepEmail) {
+                emailMessage += `\nSales rep (${salesRepEmail}) has been copied on the email.`;
+            } else if (copySalesRep && !salesRepEmail) {
+                emailMessage += `\nNote: Sales rep email was not provided, so they were not copied.`;
+            }
+            
+            alert(emailMessage);
+            
+            renderProposals();
+            hideModal('resendModal');
+            currentResendProposal = null;
+        });
+
+        // Delete proposal functionality
+        function deleteProposal(proposalId) {
+            proposals = proposals.filter(p => p.id !== proposalId);
+            renderProposals();
+            alert('Proposal has been deleted successfully.');
+        }
+
+        // Initialize the app
+        loadCompanySettings();
+        renderCustomers();
+        renderItems();
+        renderProposals();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97c1afd6350267e6',t:'MTc1NzM2ODQ5Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
